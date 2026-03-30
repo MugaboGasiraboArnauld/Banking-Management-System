@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bank Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <i class="fas fa-university"></i>
+                <h1>Bank Management System</h1>
+                <p>Secure Banking Portal</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="login-hint">
+                    <p>Default: admin / admin123</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="app-container hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-university"></i>
+                <span>Bank System</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fas fa-wallet"></i>
+                    <span>Accounts</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-page="loans">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Loans</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users" id="usersNav">
+                    <i class="fas fa-user-cog"></i>
+                    <span>Users</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span id="currentUser">Admin</span>
+                </div>
+                <button id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <button class="menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h2 id="pageTitle">Dashboard</h2>
+                <div class="header-actions">
+                    <button class="btn-icon" id="notificationsBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Dashboard Page -->
+                <section id="dashboardPage" class="page active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon customers">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalCustomers">0</h3>
+                                <p>Total Customers</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon accounts">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalAccounts">0</h3>
+                                <p>Active Accounts</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon balance">
+                                <i class="fas fa-dollar-sign"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalBalance">$0</h3>
+                                <p>Total Balance</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon transactions">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="todayTransactions">0</h3>
+                                <p>Today's Transactions</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-clock"></i> Recent Transactions</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table" id="recentTransactionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Account</th>
+                                            <th>Customer</th>
+                                            <th>Type</th>
+                                            <th>Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-chart-pie"></i> Accounts by Type</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="accountsByType" class="chart-container"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Customers Page -->
+                <section id="customersPage" class="page">
+                    <div class="page-header">
+                        <div class="search-box">
+                            <input type="text" id="customerSearch" placeholder="Search customers...">
+                            <button class="btn-search"><i class="fas fa-search"></i></button>
+                        </div>
+                        <button class="btn-primary" id="addCustomerBtn">
+                            <i class="fas fa-plus"></i> Add Customer
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table" id="customersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Customer ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Accounts Page -->
+                <section id="accountsPage" class="page">
+                    <div class="page-header">
+                        <div class="search-box">
+                            <input type="text" id="accountSearch" placeholder="Search accounts...">
+                            <button class="btn-search"><i class="fas fa-search"></i></button>
+                        </div>
+                        <button class="btn-primary" id="addAccountBtn">
+                            <i class="fas fa-plus"></i> Open Account
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table" id="accountsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Account #</th>
+                                        <th>Customer</th>
+                                        <th>Type</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th>Opened</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Transactions Page -->
+                <section id="transactionsPage" class="page">
+                    <div class="page-header">
+                        <div class="action-buttons">
+                            <button class="btn-deposit" id="depositBtn">
+                                <i class="fas fa-arrow-down"></i> Deposit
+                            </button>
+                            <button class="btn-withdraw" id="withdrawBtn">
+                                <i class="fas fa-arrow-up"></i> Withdraw
+                            </button>
+                            <button class="btn-transfer" id="transferBtn">
+                                <i class="fas fa-exchange-alt"></i> Transfer
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table" id="transactionsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Transaction ID</th>
+                                        <th>Date</th>
+                                        <th>Account</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Balance After</th>
+                                        <th>Performed By</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Loans Page -->
+                <section id="loansPage" class="page">
+                    <div class="page-header">
+                        <button class="btn-primary" id="addLoanBtn">
+                            <i class="fas fa-plus"></i> New Loan
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table" id="loansTable">
+                                <thead>
+                                    <tr>
+                                        <th>Loan ID</th>
+                                        <th>Customer</th>
+                                        <th>Account</th>
+                                        <th>Principal</th>
+                                        <th>Interest</th>
+                                        <th>Monthly</th>
+                                        <th>Balance</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Reports Page -->
+                <section id="reportsPage" class="page">
+                    <div class="page-header">
+                        <div class="report-filters">
+                            <select id="reportYear">
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                            <select id="reportMonth">
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                            <button class="btn-primary" id="generateReportBtn">
+                                <i class="fas fa-file-alt"></i> Generate Report
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Transaction Summary by Type</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table" id="reportTypeTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Type</th>
+                                            <th>Count</th>
+                                            <th>Total Amount</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3>Daily Transactions</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="data-table" id="reportDailyTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Count</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Users Page -->
+                <section id="usersPage" class="page">
+                    <div class="page-header">
+                        <button class="btn-primary" id="addUserBtn">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-body">
+                            <table class="data-table" id="usersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Full Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Created</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Customer Modal -->
+    <div id="customerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="customerModalTitle">Add Customer</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="customerForm" class="modal-form">
+                <input type="hidden" id="customerId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address</label>
+                    <textarea id="address" rows="2"></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth</label>
+                        <input type="date" id="dateOfBirth">
+                    </div>
+                    <div class="form-group">
+                        <label for="idNumber">ID Number</label>
+                        <input type="text" id="idNumber">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="occupation">Occupation</label>
+                        <input type="text" id="occupation">
+                    </div>
+                    <div class="form-group">
+                        <label for="employer">Employer</label>
+                        <input type="text" id="employer">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="monthlyIncome">Monthly Income</label>
+                    <input type="number" id="monthlyIncome" step="0.01">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Customer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Modal -->
+    <div id="accountModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Open Account</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="accountForm" class="modal-form">
+                <div class="form-group">
+                    <label for="accountCustomer">Customer</label>
+                    <select id="accountCustomer" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accountType">Account Type</label>
+                    <select id="accountType" required>
+                        <option value="">Select Type</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="initialDeposit">Initial Deposit</label>
+                    <input type="number" id="initialDeposit" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="overdraftLimit">Overdraft Limit</label>
+                    <input type="number" id="overdraftLimit" step="0.01" value="0">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Open Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Deposit</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="depositForm" class="modal-form">
+                <div class="form-group">
+                    <label for="depositAccount">Account Number</label>
+                    <input type="text" id="depositAccount" required placeholder="Enter account number">
+                    <div id="depositAccountInfo" class="account-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="depositAmount">Amount</label>
+                    <input type="number" id="depositAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="depositDescription">Description</label>
+                    <input type="text" id="depositDescription" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary btn-deposit">Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Withdraw Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Withdraw</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="withdrawForm" class="modal-form">
+                <div class="form-group">
+                    <label for="withdrawAccount">Account Number</label>
+                    <input type="text" id="withdrawAccount" required placeholder="Enter account number">
+                    <div id="withdrawAccountInfo" class="account-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawAmount">Amount</label>
+                    <input type="number" id="withdrawAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="withdrawDescription">Description</label>
+                    <input type="text" id="withdrawDescription" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary btn-withdraw">Withdraw</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Transfer Modal -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Transfer</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="transferForm" class="modal-form">
+                <div class="form-group">
+                    <label for="fromAccount">From Account</label>
+                    <input type="text" id="fromAccount" required placeholder="Enter source account number">
+                    <div id="fromAccountInfo" class="account-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="toAccount">To Account</label>
+                    <input type="text" id="toAccount" required placeholder="Enter destination account number">
+                    <div id="toAccountInfo" class="account-info"></div>
+                </div>
+                <div class="form-group">
+                    <label for="transferAmount">Amount</label>
+                    <input type="number" id="transferAmount" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="transferDescription">Description</label>
+                    <input type="text" id="transferDescription" placeholder="Optional">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary btn-transfer">Transfer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Loan Modal -->
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>New Loan Application</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="loanForm" class="modal-form">
+                <div class="form-group">
+                    <label for="loanCustomer">Customer</label>
+                    <select id="loanCustomer" required>
+                        <option value="">Select Customer</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loanAccount">Disbursement Account</label>
+                    <select id="loanAccount" required>
+                        <option value="">Select Account</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="principalAmount">Principal Amount</label>
+                        <input type="number" id="principalAmount" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loanInterestRate">Interest Rate (%)</label>
+                        <input type="number" id="loanInterestRate" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="loanTermMonths">Term (Months)</label>
+                    <input type="number" id="loanTermMonths" required>
+                </div>
+                <div class="loan-summary" id="loanSummary">
+                    <p>Monthly Payment: <span id="monthlyPayment">$0.00</span></p>
+                    <p>Total Amount Due: <span id="totalAmountDue">$0.00</span></p>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="userModalTitle">Add User</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="userForm" class="modal-form">
+                <input type="hidden" id="userId">
+                <div class="form-group">
+                    <label for="userUsername">Username</label>
+                    <input type="text" id="userUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPassword">Password</label>
+                    <input type="password" id="userPassword">
+                    <small>Leave blank to keep current password</small>
+                </div>
+                <div class="form-group">
+                    <label for="userFullName">Full Name</label>
+                    <input type="text" id="userFullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email</label>
+                    <input type="email" id="userEmail" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="userRole">Role</label>
+                        <select id="userRole" required>
+                            <option value="teller">Teller</option>
+                            <option value="manager">Manager</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="userStatus">Status</label>
+                        <select id="userStatus">
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary modal-cancel">Cancel</button>
+                    <button type="submit" class="btn-primary">Save User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Account Details Modal -->
+    <div id="accountDetailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Account Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="accountDetailsContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Details Modal -->
+    <div id="customerDetailsModal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Customer Details</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body" id="customerDetailsContent">
+                <!-- Content loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
